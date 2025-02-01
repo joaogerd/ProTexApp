@@ -326,7 +326,3 @@ Contributions are welcome! If you have ideas for improvements, bug fixes, or new
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-Feel free to adjust this README as needed. If you have further questions or need additional examples, please let me know!
