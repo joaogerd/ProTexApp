@@ -37,6 +37,7 @@ Revision History (Python Version):
   - Converted and reorganized from the original Perl version to Python.
   - Added comprehensive documentation and improved command-line parsing.
   05May2023  J. G. de Mattos  Added Shell script support (Python version).
+  01Feb2025  J. G. de Mattos  Added a custon style option
 
 -----------------------------------------------------------------------
 Command Line Switches:
@@ -89,19 +90,29 @@ def print_notice():
     print("% it is regenerated from its source. Send questions to your_email@example.com\n")
 
 
-def print_preamble():
+def print_preamble(custom_style=None):
     """Prints the LaTeX preamble.
 
-    The preamble defines the document class, packages, page dimensions, and other initial settings.
-
+    If a custom_style is provided, it uses that style (document class) and includes the corresponding package.
+    
+    Args:
+        custom_style (str, optional): The custom document class or style name to use.
+        
     Returns:
         None
     """
     print("%------------------------ PREAMBLE --------------------------")
-    print("\\documentclass[11pt]{article}")
+    if custom_style:
+        print("\\documentclass[11pt]{" + custom_style + "}")
+    else:
+        print("\\documentclass[11pt]{article}")
+    
     print("\\usepackage{amsmath}")
-    print("\\usepackage{epsfig}")
-    print("\\usepackage{hangcaption}")
+    
+    # Se o usuário tiver um arquivo de estilo (por exemplo, myStyle.sty), pode incluí-lo:
+    if custom_style:
+        print("\\usepackage{" + custom_style + "}")
+    
     print("\\textheight     9in")
     print("\\topmargin      0pt")
     print("\\headsep        1cm")
@@ -523,6 +534,8 @@ def main():
         "!REMARKS:", "!TO DO:", "!CALLING SEQUENCE:", "!AUTHOR:",
         "!CALLED FROM:", "!LOCAL VARIABLES:"
     ], help="List of optional keyword markers")
+    parser.add_argument("--style", type=str, default=None,
+                        help="Custom LaTeX style or document class to use (e.g., 'myStyle')")
     opts = parser.parse_args()
 
     # Determine the language; Fortran90 is the default.
@@ -618,7 +631,7 @@ def main():
     
     print_notice()
     if not opts.bare:
-        print_preamble()
+        print_preamble(opts.style)
     print_macros()
 
     for filename in files:
